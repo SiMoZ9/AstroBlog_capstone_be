@@ -1,6 +1,8 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const usersRoute = require('./routes/userRoute')
+const postRoute = require('./routes/postRoute')
+const loginRoute = require('./routes/loginRoute')
 
 const cors = require('cors')
 
@@ -12,7 +14,8 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/', usersRoute)
-
+app.use('/', postRoute)
+app.use('/', loginRoute)
 
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,

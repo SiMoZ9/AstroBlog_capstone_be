@@ -2,8 +2,28 @@ const express = require('express');
 const user = express.Router()
 const userModel = require('../models/userModel')
 const bcrypt = require('bcrypt')
+const mongoose = require('mongoose')
 
 require('dotenv').config()
+
+const {body, validationResult} = require('express-validator')
+
+const userRegisterValidation = [
+    body('email').isEmail(),
+    body('password').isStrongPassword({
+        minSymbols: 1,
+        minLowercase: 1,
+        minLength: 8,
+        minNumbers: 1,
+        minUppercase: 1
+    }),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty())
+            return res.status(400).json({ errors: errors.array() });
+        next();
+    }
+]
 
 user.get('/users', async (req, res) => {
 
@@ -24,33 +44,50 @@ user.get('/users', async (req, res) => {
     }
 })
 
-user.post('/users/create', async (req, res) => {
+user.post('/users/create', userRegisterValidation, async (req, res) => {
+
 
     // pwd crypting
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
-        const newUserModel = new userModel({
-            userName: req.body.userName,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            password: hashedPassword,
+    const newUserModel = new userModel({
+        userName: req.body.userName,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        password: hashedPassword,
+    })
+
+    const documentToUpdateId = new mongoose.Types.ObjectId(req.body._id);
+    const emailExists = await userModel.findOne({ $or: [
+            {email: req.body.email},
+            {userName: req.body.userName}
+        ], _id: {$ne: documentToUpdateId}});
+
+    if (emailExists) {
+        return res.status(400).send({
+            statusCode: 400,
+            message: 'Email already used'
+        });
+    }
+
+
+    try {
+        const savedUser = await newUserModel.save()
+        res.status(201).send({
+            statusCode: 201,
+            message: 'User created',
+            savedUser
         })
-        try {
-            const savedUser = await newUserModel.save()
-            res.status(201).send({
-                statusCode: 201,
-                message: 'User created',
-                savedUser
-            })
-        } catch (err) {
-            res.status(500).send({
-                message: "Internal server error",
-                statusCode: 500,
-            })
-            console.error(err)
-        }
+    } catch (err) {
+        res.status(500).send({
+            message: "Internal server error",
+            statusCode: 500,
+        })
+        console.error(err)
+    }
+
 })
 
 user.patch('/users/:id', async (req, res) => {

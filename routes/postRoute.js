@@ -1,21 +1,19 @@
-const express  = require('express')
-import {body} from 'express-validator'
+const express  = require('express');
+const post = express.Router();
 const postModel = require('../models/postModel')
 const userModel = require('../models/userModel')
-const verifyToken = require('../middlewares/verifyToken')
 const jwt = require('jsonwebtoken')
-
 require('dotenv').config()
 
 const multer = require('multer')
-const crypto = require('crypto')
 const cloudinary = require('cloudinary').v2
 const {CloudinaryStorage} = require('multer-storage-cloudinary')
 
+const verifyToken = require('../middlewares/verifyToken')
 
-const post = express.Router()
+const {body} = require('express-validator')
 
-export const postValidation = [
+const postValidation = [
     body('title', 'Title cannot be empty').not().isEmpty(),
     body('object', 'Object cannot be empty').not().isEmpty(),
     body('mainPic', 'You must upload a picture').isEmpty()
@@ -79,11 +77,12 @@ post.post('/skyPost', postValidation, async (req, res) => {
     const userToken = localToken.split(' ')[0]
     const payload = jwt.verify(userToken, process.env.JWT_SECRET)
 
-    const userEmail = await userModel.findOne({email: payload.email})
-    const {_id} = userEmail
+    let id = ""
+    const userEmail = await userModel.findById(payload._id)
+    if (userEmail) id = payload._id
 
     const newPost = new postModel({
-        author: _id,
+        author: id,
         object: req.body.object,
         title: req.body.title,
 

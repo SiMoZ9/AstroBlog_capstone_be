@@ -1,5 +1,37 @@
 const mongoose = require('mongoose')
 
+const instrumentSchema = new mongoose.Schema({
+
+    telescope: {
+        model: {
+            type: String
+        },
+
+        length: {
+            type: Number
+        },
+
+        aperture: {
+            type: Number
+        }
+    },
+
+    camera: {
+        model: {
+            type: String
+        },
+
+        filters: {
+            type: Array
+        }
+    }
+
+}, {
+    timestamps: true,
+    strict: true
+})
+
+
 const userSchema = new mongoose.Schema({
 
     userName: {
@@ -31,37 +63,5 @@ const userSchema = new mongoose.Schema({
     }]
 
 }, {timestamps: true, strict: true})
-
-
-const instrumentSchema = new mongoose.Schema({
-
-    telescope: {
-        model: {
-            type: String
-        },
-
-        length: {
-            type: Number
-        },
-
-        aperture: {
-            type: Number
-        }
-    },
-
-    camera: {
-        model: {
-            type: String
-        },
-
-        filters: {
-            type: Array
-        }
-    }
-
-}, {
-    timestamps: true,
-    strict: true
-})
 
 module.exports = mongoose.model('userModel', userSchema, 'users')
