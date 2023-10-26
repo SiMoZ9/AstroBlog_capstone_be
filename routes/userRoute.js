@@ -3,6 +3,8 @@ const user = express.Router()
 const userModel = require('../models/userModel')
 const bcrypt = require('bcrypt')
 
+require('dotenv').config()
+
 user.get('/users', async (req, res) => {
 
     const users = await userModel.find()
