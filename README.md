@@ -1,6 +1,10 @@
-# AstroBlog_capstone_be
+# Welcome to AstroBlog backend repo!
 
-## Welcome to AstroBlog backend
+Here's my capstone project for Epicode WD-PT course.
 
-Here's my capstone project for Epicode WD-PT course
-
+Roadmap
+- [] Post model & post routes
+-   Implement AstronomyAPI
+- [] User model & user routes
+- [] Login system
+- [] Protected routes
