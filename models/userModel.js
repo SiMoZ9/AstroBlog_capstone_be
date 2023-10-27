@@ -58,9 +58,9 @@ const userSchema = new mongoose.Schema({
         min: 8
     },
 
-    instrumentation: [{
-        type: [instrumentSchema]
-    }]
+    instrumentation: {
+        type: instrumentSchema
+    }
 
 }, {timestamps: true, strict: true})
 

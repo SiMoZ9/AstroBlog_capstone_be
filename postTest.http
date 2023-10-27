@@ -1,0 +1,23 @@
+GET http://localhost:5050/skyPost/all
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlNpTW9aOSIsImVtYWlsIjoic2ltb25lam9uYXMwOEBnbWFpbC5jb20iLCJfaWQiOiI2NTNiZDgzYmEyMDQwZTUwODQ5ZTI4YjciLCJpYXQiOjE2OTg0MjA3OTksImV4cCI6MTY5ODY3OTk5OX0.evuIKYcFUxzW_kS3usumdZ20T8QiAkZUc4CC4A0Zhek
+
+###
+POST http://localhost:5050/skyPost/post HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlNpTW9aOSIsImVtYWlsIjoic2ltb25lam9uYXMwOEBnbWFpbC5jb20iLCJfaWQiOiI2NTNiZDgzYmEyMDQwZTUwODQ5ZTI4YjciLCJpYXQiOjE2OTg0MjA3OTksImV4cCI6MTY5ODY3OTk5OX0.evuIKYcFUxzW_kS3usumdZ20T8QiAkZUc4CC4A0Zhek
+Content-Type: application/json
+
+{
+  "object": "NGC6986",
+  "title": "NGC6986 HOO",
+  "description": {
+    "instrumentation": {
+      "telescope": "SkyWatcher P400"
+    },
+    "place": {
+      "coordinates": {
+        "latitude": 48.887,
+        "longitude": 12.231
+      }
+    }
+  }
+}

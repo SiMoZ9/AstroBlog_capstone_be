@@ -11,12 +11,12 @@ const {CloudinaryStorage} = require('multer-storage-cloudinary')
 
 const verifyToken = require('../middlewares/verifyToken')
 
-const {body} = require('express-validator')
+const {body, validationResult} = require('express-validator')
 
 const postValidation = [
     body('title', 'Title cannot be empty').not().isEmpty(),
     body('object', 'Object cannot be empty').not().isEmpty(),
-    body('mainPic', 'You must upload a picture').isEmpty()
+    //body('mainPic', 'You must upload a picture').isEmpty()
 ]
 
 cloudinary.config({
@@ -36,7 +36,7 @@ const cloudStorage = new CloudinaryStorage({
 
 const cloudUpload = multer({storage: cloudStorage})
 
-post.get('/skyPost', verifyToken, async (req, res) => {
+post.get('/skyPost/all', verifyToken, async (req, res) => {
 
     const {
         page = 1,
@@ -46,7 +46,7 @@ post.get('/skyPost', verifyToken, async (req, res) => {
     try {
         const posts = await postModel.find().limit(pageSize).skip((page - 1) * (pageSize)).populate('author')
         res.status(200).send({
-            statusCode: 500,
+            statusCode: 200,
             currentPage: Number(page),
             posts
         })
@@ -71,9 +71,9 @@ post.post('/skyPost/cloudUpload', cloudUpload.single('cover'), async (req, res) 
     }
 })
 
-post.post('/skyPost', postValidation, async (req, res) => {
+post.post('/skyPost/post', postValidation, verifyToken, async (req, res) => {
 
-    const localToken = JSON.parse(localStorage.getItem('loggedInUser'))
+    const localToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlNpTW9aOSIsImVtYWlsIjoic2ltb25lam9uYXMwOEBnbWFpbC5jb20iLCJfaWQiOiI2NTNiZDgzYmEyMDQwZTUwODQ5ZTI4YjciLCJpYXQiOjE2OTg0MjA3OTksImV4cCI6MTY5ODY3OTk5OX0.evuIKYcFUxzW_kS3usumdZ20T8QiAkZUc4CC4A0Zhek"
     const userToken = localToken.split(' ')[0]
     const payload = jwt.verify(userToken, process.env.JWT_SECRET)
 
@@ -87,22 +87,9 @@ post.post('/skyPost', postValidation, async (req, res) => {
         title: req.body.title,
 
         mainPic: req.body.mainPic,
-
-        description: {
-            instrumentation: {
-                telescope: req.body.description.instrumentation.telescope,
-                camera: req.body.description.instrumentation.camera
-            },
-
-            place: {
-                hour: req.body.description.place.hour,
-                coordinates: {
-                    latitude: req.body.description.place.coordinates.latitude,
-                    longitude: req.body.description.place.coordinates.longitude
-                }
-            }
-        }
+        description: req.body.description
     })
+
 
     try {
 

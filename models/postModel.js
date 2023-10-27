@@ -1,5 +1,47 @@
 const mongoose = require('mongoose')
 
+const instrumentationSchema = new mongoose.Schema({
+    telescope: {
+        type: String
+    },
+
+    camera: {
+        type: String
+    }
+}, {
+    timestamps: true,
+    strict: true
+})
+
+const placeSchema = new mongoose.Schema({
+    coordinates: {
+        latitude: {
+            type: Number
+        },
+
+        longitude: {
+            type: Number
+        }
+    }
+}, {
+    timestamps: true,
+    strict: true
+})
+
+const descriptionSchema = new mongoose.Schema({
+
+    instrumentation: {
+        type: instrumentationSchema
+    },
+
+    place:{
+        type: placeSchema
+    }
+}, {
+    timestamps: true,
+    strict: true
+})
+
 const postSchema = new mongoose.Schema({
 
     author: {
@@ -22,32 +64,7 @@ const postSchema = new mongoose.Schema({
     },
 
     description: {
-        instrumentation: {
-            telescope: {
-                type: String
-            },
-
-            camera: {
-                type: String
-            },
-        },
-
-        place: {
-            hour: {
-                type: Date
-            },
-
-            coordinates: {
-                latitude: {
-                    type: Number
-                },
-
-                longitude: {
-                    type: Number
-                }
-            }
-        },
-        type: Object
+        type: descriptionSchema
     }
 
 }, {
