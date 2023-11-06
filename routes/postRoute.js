@@ -22,7 +22,6 @@ const postValidation = [
 cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
-    cloud_name: process.env.CLOUDINARY_NAME
 })
 
 const cloudStorage = new CloudinaryStorage({
@@ -59,7 +58,7 @@ post.get('/skyPost/all', verifyToken, async (req, res) => {
     }
 })
 
-post.post('/skyPost/cloudUpload', cloudUpload.single('cover'), async (req, res) => {
+post.post('/skyPost/cloudUpload', cloudUpload.single('mainPic'), async (req, res) => {
     try {
         res.status(200).json({ cover: req.file.path})
     } catch(e) {
@@ -71,9 +70,9 @@ post.post('/skyPost/cloudUpload', cloudUpload.single('cover'), async (req, res) 
     }
 })
 
-post.post('/skyPost/post', postValidation, verifyToken, async (req, res) => {
+post.post('/skyPost/post/:token', postValidation, verifyToken, async (req, res) => {
 
-    const localToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlNpTW9aOSIsImVtYWlsIjoic2ltb25lam9uYXMwOEBnbWFpbC5jb20iLCJfaWQiOiI2NTNiZDgzYmEyMDQwZTUwODQ5ZTI4YjciLCJpYXQiOjE2OTg0MjA3OTksImV4cCI6MTY5ODY3OTk5OX0.evuIKYcFUxzW_kS3usumdZ20T8QiAkZUc4CC4A0Zhek"
+    const localToken = req.params.token
     const userToken = localToken.split(' ')[0]
     const payload = jwt.verify(userToken, process.env.JWT_SECRET)
 
