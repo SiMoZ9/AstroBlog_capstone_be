@@ -58,6 +58,28 @@ post.get('/skyPost/all', verifyToken, async (req, res) => {
     }
 })
 
+post.get('/skyPost/:id', verifyToken, async (req, res) => {
+
+    const {id} = req.params
+    console.log(id)
+    try {
+        const thisPost = await postModel.findById(id).populate('author')
+        if (!thisPost) {
+            res.status(404).send({
+                statusCode: 404,
+                message: "Post not exist"
+            })
+        } else {
+            res.status(200).send({
+                statusCode: 200,
+                thisPost
+            })
+        }
+    } catch (e) {
+
+    }
+})
+
 post.post('/skyPost/cloudUpload', cloudUpload.single('mainPic'), async (req, res) => {
     try {
         res.status(200).json({ cover: req.file.path})

@@ -58,6 +58,11 @@ const userSchema = new mongoose.Schema({
         min: 8
     },
 
+    avatar: {
+        type: String,
+        default: '/home/simone/Desktop/Capstone project/Capstone_be/assets/2606572_5907.jpg'
+    },
+
     instrumentation: {
         type: instrumentSchema
     }

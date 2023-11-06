@@ -21,3 +21,7 @@ Content-Type: application/json
     }
   }
 }
+
+###
+GET http://localhost:5050/skyPost/6548d65e037e169293a3e010
+Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlNpTW9aOSIsImVtYWlsIjoic2ltb25lam9uYXMwOEBnbWFpbC5jb20iLCJfaWQiOiI2NTNiZjViODY0NDYwZWRiYzJmYjYyZTkiLCJpYXQiOjE2OTkyNjgzODIsImV4cCI6MTY5OTUyNzU4Mn0.ef7huDo7YzQEOPE0gWpIiy13zH7XTDu7RUsTAwcasJI
