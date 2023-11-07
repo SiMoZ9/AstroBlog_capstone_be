@@ -20,10 +20,6 @@ const instrumentSchema = new mongoose.Schema({
         model: {
             type: String
         },
-
-        filters: {
-            type: Array
-        }
     }
 
 }, {

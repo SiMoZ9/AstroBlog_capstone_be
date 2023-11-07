@@ -7,7 +7,42 @@ const instrumentationSchema = new mongoose.Schema({
 
     camera: {
         type: String
+    },
+
+    filters: {
+        broadband: {
+            l: {
+                type: String
+            },
+            r: {
+                type: String
+            },
+            g: {
+                type: String
+            },
+            b: {
+                type: String
+            },
+        },
+        narrowband: {
+            ha: {
+                type: String
+            },
+            oiii: {
+                type: String
+            },
+            sii: {
+                type: String
+            },
+        },
+
+        color: {
+            enanched: {
+                type: String
+            },
+        }
     }
+
 }, {
     timestamps: true,
     strict: true
@@ -21,12 +56,32 @@ const placeSchema = new mongoose.Schema({
 
         longitude: {
             type: Number
+        },
+
+        ra: {
+            type: Number
+        },
+
+        dec: {
+            type: Number
+        },
+
+        date: {
+            type: String
         }
+    },
+
+    constellation: {
+        type: String
     }
 }, {
     timestamps: true,
     strict: true
 })
+
+const filtersSchema = new mongoose.Schema({
+
+}, {timestamps: true, strict: true})
 
 const descriptionSchema = new mongoose.Schema({
 
@@ -60,7 +115,8 @@ const postSchema = new mongoose.Schema({
     },
 
     mainPic: {
-        type: String
+        type: String,
+        required: true
     },
 
     description: {
