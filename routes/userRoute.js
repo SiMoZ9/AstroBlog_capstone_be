@@ -3,10 +3,12 @@ const user = express.Router()
 const userModel = require('../models/userModel')
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
+const verifyToken = require('../middlewares/verifyToken')
 
 require('dotenv').config()
 
 const {body, validationResult} = require('express-validator')
+const jwt = require("jsonwebtoken");
 
 const userRegisterValidation = [
     body('email').isEmail(),
@@ -42,6 +44,34 @@ user.get('/users', async (req, res) => {
         })
         console.error(err)
     }
+})
+
+user.get('/users/me/:token', verifyToken, async (req, res) => {
+    const localToken = req.params.token
+    const userToken = localToken.split(' ')[0]
+    const payload = jwt.verify(userToken, process.env.JWT_SECRET)
+
+    const userEmail = await userModel.findOne({email: payload.email})
+
+    try {
+        if (!userEmail) {
+            res.status(404).send({
+                statusCode: 404,
+                message: "Error token not valid"
+            })
+        } else {
+            res.status(200).send({
+                statusCode: 200,
+                userEmail
+            })
+        }
+    } catch (err) {
+        res.status(500).send({
+            statusCode: 500,
+            message: "Internal server error"
+        })
+    }
+
 })
 
 user.post('/users/create', userRegisterValidation, async (req, res) => {
