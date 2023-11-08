@@ -17,7 +17,8 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5050/users
+GET http://localhost:5050/users/me/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlNpTW9aOSIsImVtYWlsIjoic2ltb25lam9uYXMwOEBnbWFpbC5jb20iLCJfaWQiOiI2NTNiZjViODY0NDYwZWRiYzJmYjYyZTkiLCJpYXQiOjE2OTk0NTc3OTAsImV4cCI6MTY5OTcxNjk5MH0.lb2wbyleFZkkb-m9yBZE9LIVjfYRp2AoXur_Q69j_JQ
+Authorization: /users/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlNpTW9aOSIsImVtYWlsIjoic2ltb25lam9uYXMwOEBnbWFpbC5jb20iLCJfaWQiOiI2NTNiZjViODY0NDYwZWRiYzJmYjYyZTkiLCJpYXQiOjE2OTk0NTc3OTAsImV4cCI6MTY5OTcxNjk5MH0.lb2wbyleFZkkb-m9yBZE9LIVjfYRp2AoXur_Q69j_JQ
 
 ###
 DELETE http://localhost:5050/users/653aae364ea42b6321440eea

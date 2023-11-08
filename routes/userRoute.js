@@ -46,12 +46,14 @@ user.get('/users', async (req, res) => {
     }
 })
 
-user.get('/users/me/:token', verifyToken, async (req, res) => {
+user.get('/users/me/:token', async (req, res) => {
     const localToken = req.params.token
     const userToken = localToken.split(' ')[0]
     const payload = jwt.verify(userToken, process.env.JWT_SECRET)
 
     const userEmail = await userModel.findOne({email: payload.email})
+
+    console.log(userEmail._id)
 
     try {
         if (!userEmail) {
