@@ -1,32 +1,21 @@
 const mongoose = require('mongoose')
 
-const instrumentSchema = new mongoose.Schema({
-
-    telescope: {
-        model: {
-            type: String
-        },
-
-        length: {
-            type: Number
-        },
-
-        aperture: {
-            type: Number
-        }
+const socialSchema = new mongoose.Schema({
+    facebook: {
+        type: String
     },
 
-    camera: {
-        model: {
-            type: String
-        },
-    }
+    x: {
+        type: String
+    },
 
+    ig: {
+        type: String
+    }
 }, {
     timestamps: true,
     strict: true
 })
-
 
 const userSchema = new mongoose.Schema({
 
@@ -54,14 +43,18 @@ const userSchema = new mongoose.Schema({
         min: 8
     },
 
+    birth: {
+        type: Date
+    },
+
+    socials: {
+        type: socialSchema
+    },
+
     avatar: {
         type: String,
         default: '/home/simone/Desktop/Capstone project/Capstone_be/assets/2606572_5907.jpg'
     },
-
-    instrumentation: {
-        type: instrumentSchema
-    }
 
 }, {timestamps: true, strict: true})
 

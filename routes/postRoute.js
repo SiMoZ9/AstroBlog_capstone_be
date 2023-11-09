@@ -130,4 +130,62 @@ post.post('/skyPost/post/:token', postValidation, verifyToken, async (req, res) 
 
 })
 
+post.patch('/skyPost/edit/:id', verifyToken, async (req, res) => {
+
+    const {id} = req.params
+
+    try {
+
+        const userToUpdate = await postModel.findById(id)
+
+        if (!userToUpdate) {
+            res.status(404).send({
+                message: 'Post not found',
+                statusCode: 404
+            })
+        } else {
+            const dataToUpdate = req.body
+            const options = {new: true}
+            const res = await userModel.findByIdAndUpdate(id, dataToUpdate, options)
+            res.status(200).send({
+                statusCode: 200,
+                message: 'User updated successfully',
+                res
+            })
+        }
+    } catch (err) {
+        res.status(500).send({
+            message: "Internal server error",
+            statusCode: 500,
+        })
+        console.error(err)
+    }
+})
+
+post.delete('/skyPost/delete/:id', async (req, res) => {
+
+    const { id } = req.params;
+
+    try {
+        const postToDelete = await postModel.findByIdAndDelete(id)
+        if (!postToDelete) {
+            return res.status(404).send({
+                statusCode: 404,
+                message: "Post not found or already deleted!"
+            })
+        } else {
+            res.status(200).send({
+                statusCode: 200,
+                message: "Post deleted successfully"
+            })
+        }
+
+    } catch (e) {
+        res.status(500).send({
+            statusCode: 500,
+            message: "Internal Server Error"
+        })
+    }
+})
+
 module.exports = post

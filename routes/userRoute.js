@@ -53,8 +53,6 @@ user.get('/users/me/:token', async (req, res) => {
 
     const userEmail = await userModel.findOne({email: payload.email})
 
-    console.log(userEmail._id)
-
     try {
         if (!userEmail) {
             res.status(404).send({
@@ -89,6 +87,8 @@ user.post('/users/create', userRegisterValidation, async (req, res) => {
         lastName: req.body.lastName,
         email: req.body.email,
         password: hashedPassword,
+        birth: req.body.birth,
+        socials: req.body.socials
     })
 
     const documentToUpdateId = new mongoose.Types.ObjectId(req.body._id);
@@ -122,12 +122,17 @@ user.post('/users/create', userRegisterValidation, async (req, res) => {
 
 })
 
-user.patch('/users/:id', async (req, res) => {
-    const {id} = req.params
+user.patch('/users/:token', verifyToken, async (req, res) => {
+    const localToken = req.params.token
+    const userToken = localToken.split(' ')[0]
+    const payload = jwt.verify(userToken, process.env.JWT_SECRET)
+
+    console.log(payload)
 
     try {
 
-        const userToUpdate = await userModel.findById(id)
+        const userToUpdate = await userModel.findById(payload._id)
+        console.log(userToUpdate)
 
         if (!userToUpdate) {
             res.status(404).send({
@@ -137,11 +142,12 @@ user.patch('/users/:id', async (req, res) => {
         } else {
             const dataToUpdate = req.body
             const options = {new: true}
-            const res = await userModel.findByIdAndUpdate(id, dataToUpdate, options)
+            const result = await userModel.findByIdAndUpdate(payload, dataToUpdate, options)
+
             res.status(200).send({
                 statusCode: 200,
                 message: 'User updated successfully',
-                res
+                result
             })
         }
     } catch (err) {
@@ -177,7 +183,6 @@ user.delete('/users/:id', async (req, res) => {
             message: "Internal Server Error"
         })
     }
-
 })
 
 module.exports = user
