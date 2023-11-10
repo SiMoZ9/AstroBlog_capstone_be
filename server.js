@@ -2,16 +2,17 @@ const express = require('express')
 const mongoose = require('mongoose')
 const usersRoute = require('./routes/userRoute')
 const postRoute = require('./routes/postRoute')
+
 const loginRoute = require('./routes/loginRoute')
 
 const cors = require('cors')
 
 require('dotenv').config()
-const PORT = 5050;
+const PORT = 5051;
 const app = express()
 
-app.use(cors(
-))
+
+app.use(cors())
 app.use(express.json())
 
 app.use('/', usersRoute)

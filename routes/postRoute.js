@@ -6,12 +6,13 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 const multer = require('multer')
-const cloudinary = require('cloudinary').v2
 const {CloudinaryStorage} = require('multer-storage-cloudinary')
+
 
 const verifyToken = require('../middlewares/verifyToken')
 
 const {body, validationResult} = require('express-validator')
+const mongoose = require("mongoose");
 
 const postValidation = [
     body('title', 'Title cannot be empty').not().isEmpty(),
@@ -19,21 +20,36 @@ const postValidation = [
     //body('mainPic', 'You must upload a picture').isEmpty()
 ]
 
+const cloudinary = require("cloudinary").v2;
 cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
-})
+});
+async function handleUpload(file) {
+    const res = await cloudinary.uploader.upload(file, {
+        resource_type: "auto",
+    });
+    return res;
+}
 
-const cloudStorage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'Astro_pic',
-        format: async (req, res) => 'png',
-        public_id: (req, file) => file.name
-    }
-})
 
-const cloudUpload = multer({storage: cloudStorage})
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+const myUploadMiddleware = upload.single("mainPic");
+
+function runMiddleware(req, res, fn) {
+    return new Promise((resolve, reject) => {
+        fn(req, res, (result) => {
+            if (result instanceof Error) {
+                return reject(result);
+            }
+            return resolve(result);
+        });
+    });
+}
+
+
 
 post.get('/skyPost/all', verifyToken, async (req, res) => {
 
@@ -80,7 +96,47 @@ post.get('/skyPost/:id', verifyToken, async (req, res) => {
     }
 })
 
-post.post('/skyPost/cloudUpload', cloudUpload.single('mainPic'), async (req, res) => {
+post.get('/skyPost/account/posts/:token', verifyToken, async (req, res) => {
+    const localToken = req.params.token
+    const userToken = localToken.split(' ')[0]
+    const payload = jwt.verify(userToken, process.env.JWT_SECRET)
+
+    const id = payload._id
+    console.log(id)
+
+    const dbId = new mongoose.Types.ObjectId(id)
+    console.log(dbId)
+
+    try {
+        const userInfo = await postModel.find({
+            author: dbId
+        })
+
+        console.log(userInfo)
+
+        if (!userInfo) {
+            res.status(404).send({
+                statusCode: 404,
+                message: "Posts not found"
+            })
+        } else {
+            res.status(200).send({
+                statusCode: 200,
+                message: userInfo
+            })
+        }
+
+    } catch (e) {
+        res.status(500).send({
+            statusCode: 500,
+            message: "Internal server error"
+        })
+        console.log(e)
+    }
+
+})
+
+/*post.post('/skyPost/cloudUpload', cloudUpload.single('mainPic'), async (req, res) => {
     try {
         res.status(200).json({ cover: req.file.path})
     } catch(e) {
@@ -89,6 +145,21 @@ post.post('/skyPost/cloudUpload', cloudUpload.single('mainPic'), async (req, res
             message: "Internal server error"
         })
         console.log(e)
+    }
+})*/
+
+post.post('/skyPost/cloudUpload', async (req, res) => {
+    try {
+        await runMiddleware(req, res, myUploadMiddleware);
+        const b64 = Buffer.from(req.file.buffer).toString("base64");
+        let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+        const cldRes = await handleUpload(dataURI);
+        res.json(cldRes);
+    } catch (error) {
+        console.log(error);
+        res.send({
+            message: error.message
+        });
     }
 })
 

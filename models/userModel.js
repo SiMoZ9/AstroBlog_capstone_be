@@ -17,6 +17,33 @@ const socialSchema = new mongoose.Schema({
     strict: true
 })
 
+const instrumentSchema = new mongoose.Schema({
+    telescopes: {
+        type: Array
+    },
+
+    cameras: {
+        type: Array
+    },
+
+    narrowband: {
+        type: Array
+    },
+
+    broadband: {
+        type: Array
+    },
+
+    mounts: {
+        type: Array
+    },
+
+    guides: {
+        type: Array
+    }
+
+}, {timestamps: true, strict: true})
+
 const userSchema = new mongoose.Schema({
 
     userName: {
@@ -51,10 +78,19 @@ const userSchema = new mongoose.Schema({
         type: socialSchema
     },
 
+    instruments: {
+        type: instrumentSchema
+    },
+
     avatar: {
         type: String,
         default: '/home/simone/Desktop/Capstone project/Capstone_be/assets/2606572_5907.jpg'
     },
+
+    posts: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'postModel'
+    }
 
 }, {timestamps: true, strict: true})
 

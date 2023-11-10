@@ -76,7 +76,6 @@ user.get('/users/me/:token', async (req, res) => {
 
 user.post('/users/create', userRegisterValidation, async (req, res) => {
 
-
     // pwd crypting
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
