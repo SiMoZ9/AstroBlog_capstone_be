@@ -122,7 +122,7 @@ post.get('/skyPost/account/posts/:token', verifyToken, async (req, res) => {
         } else {
             res.status(200).send({
                 statusCode: 200,
-                message: userInfo
+                userInfo
             })
         }
 
