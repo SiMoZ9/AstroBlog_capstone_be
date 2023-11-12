@@ -74,6 +74,31 @@ user.get('/users/me/:token', async (req, res) => {
 
 })
 
+user.get('/users/:id', verifyToken, async (req, res) => {
+    const {id} = req.params
+
+    try {
+        const userToGet = await userModel.findById(id)
+        if (!userToGet) {
+            res.status(404).send({
+                statusCode: 404,
+                message: "User not found"
+            })
+        } else {
+            res.status(200).send({
+                statusCode: 200,
+                userToGet
+            })
+        }
+
+    } catch (err) {
+        res.status(500).send({
+            statusCode: 500,
+            message: "Internal server error"
+        })
+    }
+})
+
 user.post('/users/create', userRegisterValidation, async (req, res) => {
 
     // pwd crypting

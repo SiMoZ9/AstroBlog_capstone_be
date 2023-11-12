@@ -79,11 +79,12 @@ const placeSchema = new mongoose.Schema({
     strict: true
 })
 
-const filtersSchema = new mongoose.Schema({
-
-}, {timestamps: true, strict: true})
 
 const descriptionSchema = new mongoose.Schema({
+
+    text: {
+        type: String
+    },
 
     instrumentation: {
         type: instrumentationSchema

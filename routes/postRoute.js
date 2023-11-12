@@ -136,6 +136,42 @@ post.get('/skyPost/account/posts/:token', verifyToken, async (req, res) => {
 
 })
 
+post.get('/skyPost/:id', verifyToken, async (req, res) => {
+
+    const {id} = req.params
+
+    const dbId = new mongoose.Types.ObjectId(id)
+    console.log(dbId)
+
+    try {
+        const userInfo = await postModel.find({
+            author: dbId
+        })
+
+        console.log(userInfo)
+
+        if (!userInfo) {
+            res.status(404).send({
+                statusCode: 404,
+                message: "Posts not found"
+            })
+        } else {
+            res.status(200).send({
+                statusCode: 200,
+                userInfo
+            })
+        }
+
+    } catch (e) {
+        res.status(500).send({
+            statusCode: 500,
+            message: "Internal server error"
+        })
+        console.log(e)
+    }
+
+})
+
 /*post.post('/skyPost/cloudUpload', cloudUpload.single('mainPic'), async (req, res) => {
     try {
         res.status(200).json({ cover: req.file.path})
@@ -217,10 +253,10 @@ post.patch('/skyPost/edit/:id', verifyToken, async (req, res) => {
         } else {
             const dataToUpdate = req.body
             const options = {new: true}
-            const res = await userModel.findByIdAndUpdate(id, dataToUpdate, options)
+            const res = await postModel.findByIdAndUpdate(id, dataToUpdate, options)
             res.status(200).send({
                 statusCode: 200,
-                message: 'User updated successfully',
+                message: 'Post updated successfully',
                 res
             })
         }
