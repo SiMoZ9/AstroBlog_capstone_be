@@ -3,7 +3,12 @@ const post = express.Router();
 const postModel = require('../models/postModel')
 const userModel = require('../models/userModel')
 const jwt = require('jsonwebtoken')
+
 require('dotenv').config()
+
+const runMiddleware = require('../middlewares/CloudinaryMiddle')
+const handleUpload = require('../modules/CloudinaryHandler')
+
 
 const multer = require('multer')
 const {CloudinaryStorage} = require('multer-storage-cloudinary')
@@ -13,6 +18,7 @@ const verifyToken = require('../middlewares/verifyToken')
 
 const {body, validationResult} = require('express-validator')
 const mongoose = require("mongoose");
+const {v2: cloudinary} = require("cloudinary");
 
 const postValidation = [
     body('title', 'Title cannot be empty').not().isEmpty(),
@@ -20,36 +26,15 @@ const postValidation = [
     //body('mainPic', 'You must upload a picture').isEmpty()
 ]
 
-const cloudinary = require("cloudinary").v2;
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+const myUploadMiddleware = upload.single("mainPic");
+
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-async function handleUpload(file) {
-    const res = await cloudinary.uploader.upload(file, {
-        resource_type: "auto",
-    });
-    return res;
-}
-
-
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-const myUploadMiddleware = upload.single("mainPic");
-
-function runMiddleware(req, res, fn) {
-    return new Promise((resolve, reject) => {
-        fn(req, res, (result) => {
-            if (result instanceof Error) {
-                return reject(result);
-            }
-            return resolve(result);
-        });
-    });
-}
-
-
 
 post.get('/skyPost/all', verifyToken, async (req, res) => {
 
@@ -136,7 +121,7 @@ post.get('/skyPost/account/posts/:token', verifyToken, async (req, res) => {
 
 })
 
-post.get('/skyPost/:id', verifyToken, async (req, res) => {
+post.get('/skyPost/userPost/:id', verifyToken, async (req, res) => {
 
     const {id} = req.params
 
@@ -213,7 +198,6 @@ post.post('/skyPost/post/:token', postValidation, verifyToken, async (req, res) 
         author: id,
         object: req.body.object,
         title: req.body.title,
-
         mainPic: req.body.mainPic,
         description: req.body.description
     })

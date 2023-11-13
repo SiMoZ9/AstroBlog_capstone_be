@@ -84,13 +84,11 @@ const userSchema = new mongoose.Schema({
 
     avatar: {
         type: String,
-        default: '/home/simone/Desktop/Capstone project/Capstone_be/assets/2606572_5907.jpg'
     },
 
-    posts: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'postModel'
-    }
+    header: {
+        type: String,
+    },
 
 }, {timestamps: true, strict: true})
 

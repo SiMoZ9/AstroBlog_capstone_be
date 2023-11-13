@@ -5,10 +5,19 @@ const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 const verifyToken = require('../middlewares/verifyToken')
 
+const runMiddleware = require('../middlewares/CloudinaryMiddle')
+const handleUpload = require('../modules/CloudinaryHandler')
+
 require('dotenv').config()
 
 const {body, validationResult} = require('express-validator')
 const jwt = require("jsonwebtoken");
+
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+const myUploadMiddleware = upload.single("avatar");
+const headerUploadMiddleware = upload.single("header");
 
 const userRegisterValidation = [
     body('email').isEmail(),
@@ -99,6 +108,36 @@ user.get('/users/:id', verifyToken, async (req, res) => {
     }
 })
 
+user.post('/users/create/cloudUpload', async (req, res) => {
+    try {
+        await runMiddleware(req, res, myUploadMiddleware);
+        const b64 = Buffer.from(req.file.buffer).toString("base64");
+        let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+        const cldRes = await handleUpload(dataURI);
+        res.json(cldRes);
+    } catch (error) {
+        console.log(error);
+        res.send({
+            message: error.message
+        });
+    }
+})
+
+user.post('/users/create/cloudUploadHeader', async (req, res) => {
+    try {
+        await runMiddleware(req, res, headerUploadMiddleware);
+        const b64 = Buffer.from(req.file.buffer).toString("base64");
+        let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+        const cldRes = await handleUpload(dataURI);
+        res.json(cldRes);
+    } catch (error) {
+        console.log(error);
+        res.send({
+            message: error.message
+        });
+    }
+})
+
 user.post('/users/create', userRegisterValidation, async (req, res) => {
 
     // pwd crypting
@@ -111,6 +150,8 @@ user.post('/users/create', userRegisterValidation, async (req, res) => {
         lastName: req.body.lastName,
         email: req.body.email,
         password: hashedPassword,
+        avatar: req.body.avatar,
+        header: req.body.header,
         birth: req.body.birth,
         socials: req.body.socials
     })
