@@ -224,6 +224,8 @@ user.patch('/users/:token', verifyToken, async (req, res) => {
     }
 })
 
+
+
 user.delete('/users/:id', async (req, res) => {
 
     const { id } = req.params;
