@@ -152,6 +152,7 @@ user.post('/users/create', userRegisterValidation, async (req, res) => {
         password: hashedPassword,
         avatar: req.body.avatar,
         header: req.body.header,
+        instruments: {},
         birth: req.body.birth,
         socials: req.body.socials
     })
@@ -186,6 +187,8 @@ user.post('/users/create', userRegisterValidation, async (req, res) => {
     }
 
 })
+
+
 
 user.patch('/users/:token', verifyToken, async (req, res) => {
     const localToken = req.params.token
@@ -223,7 +226,6 @@ user.patch('/users/:token', verifyToken, async (req, res) => {
         console.error(err)
     }
 })
-
 
 
 user.delete('/users/:id', async (req, res) => {

@@ -19,27 +19,27 @@ const socialSchema = new mongoose.Schema({
 
 const instrumentSchema = new mongoose.Schema({
     telescopes: {
-        type: Array
+        type: String
     },
 
     cameras: {
-        type: Array
+        type: String
     },
 
     narrowband: {
-        type: Array
+        type: String
     },
 
     broadband: {
-        type: Array
+        type: String
     },
 
     mounts: {
-        type: Array
+        type: String
     },
 
     guides: {
-        type: Array
+        type: String
     }
 
 }, {timestamps: true, strict: true})
