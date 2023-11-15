@@ -31,13 +31,16 @@ const instrumentationSchema = new mongoose.Schema({
         },
         narrowband: {
             ha: {
-                type: String
+                type: String,
+                default: ""
             },
             oiii: {
-                type: String
+                type: String,
+                default: ""
             },
             sii: {
-                type: String
+                type: String,
+                default: ""
             },
         },
 
