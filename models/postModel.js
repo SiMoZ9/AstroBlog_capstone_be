@@ -12,16 +12,21 @@ const instrumentationSchema = new mongoose.Schema({
     filters: {
         broadband: {
             l: {
-                type: String
+                type: String,
+                default: ""
             },
             r: {
-                type: String
+                type: String,
+                default: ""
+
             },
             g: {
-                type: String
+                type: String,
+                default: ""
             },
             b: {
-                type: String
+                type: String,
+                default: ""
             },
         },
         narrowband: {
@@ -41,6 +46,16 @@ const instrumentationSchema = new mongoose.Schema({
                 type: String
             },
         }
+    },
+
+    mounts: {
+        type: String,
+        default: ""
+    },
+
+    guides: {
+        type: String,
+        default: ""
     }
 
 }, {

@@ -178,6 +178,9 @@ user.post('/users/create', userRegisterValidation, async (req, res) => {
             message: 'User created',
             savedUser
         })
+
+        res.redirect(`${process.env.FE_ENDPOINT}/personalHome`)
+
     } catch (err) {
         res.status(500).send({
             message: "Internal server error",
