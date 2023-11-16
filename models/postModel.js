@@ -43,12 +43,6 @@ const instrumentationSchema = new mongoose.Schema({
                 default: ""
             },
         },
-
-        color: {
-            enanched: {
-                type: String
-            },
-        }
     },
 
     mounts: {

@@ -40,14 +40,18 @@ post.get('/skyPost/all', verifyToken, async (req, res) => {
 
     const {
         page = 1,
-        pageSize = 10
+        pageSize = 20
     } = req.query
+
+    const totalPosts = await postModel.count()
 
     try {
         const posts = await postModel.find().limit(pageSize).skip((page - 1) * (pageSize)).populate('author')
         res.status(200).send({
             statusCode: 200,
             currentPage: Number(page),
+            totalPages: Math.ceil(totalPosts / pageSize),
+            pageSize: pageSize,
             posts
         })
 
