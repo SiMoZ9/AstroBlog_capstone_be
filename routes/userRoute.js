@@ -61,6 +61,7 @@ user.get('/users/me/:token', async (req, res) => {
     const payload = jwt.verify(userToken, process.env.JWT_SECRET)
 
     const userEmail = await userModel.findOne({email: payload.email})
+    console.log(payload)
 
     try {
         if (!userEmail) {
@@ -171,15 +172,23 @@ user.post('/users/create', userRegisterValidation, async (req, res) => {
     }
 
 
+
     try {
         const savedUser = await newUserModel.save()
-        res.status(201).send({
-            statusCode: 201,
-            message: 'User created',
-            savedUser
+
+        const token = jwt.sign({
+            userName: savedUser.userName,
+            email: savedUser.email,
+            _id: savedUser._id,
+        }, process.env.JWT_SECRET, {
+            expiresIn: '72h'
         })
 
-        res.redirect(`${process.env.FE_ENDPOINT}/personalHome`)
+        res.header('Authorization', token).status(200).send({
+            message: "User registered successfully",
+            statusCode: 200,
+            token
+        })
 
     } catch (err) {
         res.status(500).send({
